@@ -1,0 +1,735 @@
+openapi: 3.1.0
+servers:
+  - url: https://www.courtlistener.com/api/rest/v4
+    description: CourtListener REST API v4.4
+info:
+  description: |
+    CourtListener REST API for accessing legal data including case law, court opinions, 
+    docket information, PACER data, oral arguments, and more. This API provides powerful 
+    access to vast troves of legal information for researchers, journalists, and organizations.
+    
+    ### Key Features
+    - **Case Law API**: Comprehensive access to judicial opinions and case clusters
+    - **PACER Data**: Access to federal court docket information via RECAP
+    - **Oral Arguments**: Audio and metadata from court proceedings
+    - **Search**: Full-text search across the entire database
+    - **Citation Lookup**: Verify legal citations and fight AI hallucinations
+    - **Financial Disclosures**: Judge financial disclosure data
+    
+    ### Authentication
+    Three authentication methods are supported:
+    - HTTP Token Authentication (recommended for programmatic access)
+    - Cookie/Session Authentication
+    - HTTP Basic Authentication
+    
+    ### Rate Limits
+    Default limits: 5 requests/minute, 50 requests/hour, 125 requests/day
+    Free Law Project memberships and commercial agreements available for expanded access.
+    
+  version: 4.4.0
+  title: CourtListener REST API
+  termsOfService: "https://www.courtlistener.com/terms/"
+  contact:
+    name: CourtListener API Support
+    url: https://www.courtlistener.com/contact/
+    email: info@free.law
+  license:
+    name: Custom
+    url: "https://www.courtlistener.com/terms/"
+tags:
+  - name: search
+    description: Full-text search across legal database
+  - name: opinions
+    description: Judicial opinions and case law
+  - name: clusters
+    description: Case clusters and metadata
+  - name: dockets
+    description: Court docket information
+  - name: courts
+    description: Court jurisdiction information
+  - name: audio
+    description: Oral argument audio files
+  - name: people
+    description: Judge and personnel information
+  - name: financial-disclosures
+    description: Financial disclosure reports
+  - name: recap
+    description: PACER data via RECAP
+  - name: citation-lookup
+    description: Citation verification service
+paths:
+  /search/:
+    get:
+      tags:
+        - search
+      summary: Search legal database
+      description: Full-text search across opinions, dockets, and other legal content
+      operationId: search
+      parameters:
+        - name: q
+          in: query
+          description: Search query string
+          required: true
+          schema:
+            type: string
+        - name: court
+          in: query
+          description: Filter by court jurisdiction
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    nullable: true
+                  previous:
+                    type: string
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SearchResult"
+        "401":
+          description: Authentication required
+        "429":
+          description: Rate limit exceeded
+  /opinions/:
+    get:
+      tags:
+        - opinions
+      summary: List opinions
+      description: Retrieve list of judicial opinions with filtering and pagination
+      operationId: listOpinions
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: court
+          in: query
+          description: Filter by court
+          schema:
+            type: string
+        - name: date_created
+          in: query
+          description: Filter by creation date
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: List of opinions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Opinion"
+        "401":
+          description: Authentication required
+  /opinions/{id}/:
+    get:
+      tags:
+        - opinions
+      summary: Get opinion by ID
+      description: Retrieve a specific judicial opinion by its ID
+      operationId: getOpinion
+      parameters:
+        - name: id
+          in: path
+          description: Opinion ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Opinion details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Opinion"
+        "404":
+          description: Opinion not found
+  /clusters/:
+    get:
+      tags:
+        - clusters
+      summary: List case clusters
+      description: Retrieve list of case clusters (grouped opinions)
+      operationId: listClusters
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: court
+          in: query
+          description: Filter by court
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of clusters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Cluster"
+  /clusters/{id}/:
+    get:
+      tags:
+        - clusters
+      summary: Get cluster by ID
+      description: Retrieve a specific case cluster by its ID
+      operationId: getCluster
+      parameters:
+        - name: id
+          in: path
+          description: Cluster ID
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cluster details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cluster"
+  /dockets/:
+    get:
+      tags:
+        - dockets
+      summary: List dockets
+      description: Retrieve list of court dockets
+      operationId: listDockets
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: court
+          in: query
+          description: Filter by court
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of dockets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Docket"
+  /courts/:
+    get:
+      tags:
+        - courts
+      summary: List courts
+      description: Retrieve list of court jurisdictions
+      operationId: listCourts
+      responses:
+        "200":
+          description: List of courts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Court"
+  /courts/{id}/:
+    get:
+      tags:
+        - courts
+      summary: Get court by ID
+      description: Retrieve specific court jurisdiction details
+      operationId: getCourt
+      parameters:
+        - name: id
+          in: path
+          description: Court ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Court details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Court"
+  /audio/:
+    get:
+      tags:
+        - audio
+      summary: List oral argument audio
+      description: Retrieve list of oral argument audio files
+      operationId: listAudio
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+        - name: court
+          in: query
+          description: Filter by court
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of audio files
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Audio"
+  /people/:
+    get:
+      tags:
+        - people
+      summary: List people
+      description: Retrieve list of judges and personnel
+      operationId: listPeople
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of people
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Person"
+  /financial-disclosures/:
+    get:
+      tags:
+        - financial-disclosures
+      summary: List financial disclosures
+      description: Retrieve list of financial disclosure reports
+      operationId: listFinancialDisclosures
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: List of financial disclosures
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/FinancialDisclosure"
+  /recap/:
+    get:
+      tags:
+        - recap
+      summary: RECAP PACER data
+      description: Access PACER data through the RECAP system
+      operationId: listRecap
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: RECAP data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RecapDocument"
+  /citation-lookup/:
+    post:
+      tags:
+        - citation-lookup
+      summary: Lookup citation
+      description: Verify legal citations and find corresponding cases
+      operationId: lookupCitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                citation:
+                  type: string
+                  description: Legal citation to lookup
+              required:
+                - citation
+      responses:
+        "200":
+          description: Citation lookup results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CitationLookupResult"
+components:
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Use format: Token <your-token-here>"
+    BasicAuth:
+      type: http
+      scheme: basic
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+  schemas:
+    SearchResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [Opinion, Docket, Audio, Person]
+        score:
+          type: number
+          format: float
+        snippet:
+          type: string
+    Opinion:
+      type: object
+      properties:
+        id:
+          type: integer
+        cluster_id:
+          type: integer
+        author_id:
+          type: integer
+          nullable: true
+        joined_by:
+          type: array
+          items:
+            type: integer
+        per_curiam:
+          type: boolean
+        date_created:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+        plain_text:
+          type: string
+        html:
+          type: string
+        html_columbia:
+          type: string
+          nullable: true
+        html_lawbox:
+          type: string
+          nullable: true
+        html_anon_2020:
+          type: string
+          nullable: true
+        xml_harvard:
+          type: string
+          nullable: true
+        text:
+          type: string
+    Cluster:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_filed:
+          type: string
+          format: date
+        date_filed_is_approximate:
+          type: boolean
+        slug:
+          type: string
+        source:
+          type: string
+        procedural_history:
+          type: string
+          nullable: true
+        syllabus:
+          type: string
+          nullable: true
+        headnotes:
+          type: array
+          items:
+            type: string
+        attorneys:
+          type: array
+          items:
+            type: string
+        nature_of_suit:
+          type: string
+          nullable: true
+        posture:
+          type: string
+          nullable: true
+        citation_count:
+          type: integer
+    Docket:
+      type: object
+      properties:
+        id:
+          type: integer
+        court_id:
+          type: string
+        slug:
+          type: string
+        panel:
+          type: array
+          items:
+            type: integer
+          nullable: true
+        date_created:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+        date_cert_granted:
+          type: string
+          format: date
+          nullable: true
+        date_cert_denied:
+          type: string
+          format: date
+          nullable: true
+        date_argued:
+          type: string
+          format: date
+          nullable: true
+    Court:
+      type: object
+      properties:
+        id:
+          type: string
+        date_modified:
+          type: string
+          format: date-time
+        in_use:
+          type: boolean
+        has_opinion_scraper:
+          type: boolean
+        has_oral_argument_scraper:
+          type: boolean
+        citation:
+          type: string
+        full_name:
+          type: string
+        short_name:
+          type: string
+        url:
+          type: string
+        start_date:
+          type: string
+          format: date
+          nullable: true
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        jurisdiction:
+          type: string
+    Audio:
+      type: object
+      properties:
+        id:
+          type: integer
+        docket_id:
+          type: integer
+        court_id:
+          type: string
+        date_created:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+        date_blocked:
+          type: string
+          format: date
+          nullable: true
+        source:
+          type: string
+          nullable: true
+        filepath:
+          type: string
+          nullable: true
+        duration:
+          type: integer
+          nullable: true
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        date_created:
+          type: string
+          format: date-time
+        date_modified:
+          type: string
+          format: date-time
+        date_dob:
+          type: string
+          format: date
+          nullable: true
+        date_dod:
+          type: string
+          format: date
+          nullable: true
+        date_granularity_dob:
+          type: string
+          nullable: true
+        name_first:
+          type: string
+        name_middle:
+          type: string
+          nullable: true
+        name_last:
+          type: string
+        name_suffix:
+          type: string
+          nullable: true
+    FinancialDisclosure:
+      type: object
+      properties:
+        id:
+          type: integer
+        person_id:
+          type: integer
+        year:
+          type: integer
+        report_type:
+          type: string
+        filed_date:
+          type: string
+          format: date
+        download_url:
+          type: string
+    RecapDocument:
+      type: object
+      properties:
+        id:
+          type: integer
+        docket_entry_id:
+          type: integer
+        document_number:
+          type: integer
+        pacer_doc_id:
+          type: string
+        is_available:
+          type: boolean
+        file_size:
+          type: integer
+        date_upload:
+          type: string
+          format: date-time
+    CitationLookupResult:
+      type: object
+      properties:
+        citation:
+          type: string
+        cluster_id:
+          type: integer
+          nullable: true
+        year:
+          type: integer
+          nullable: true
+        reporter:
+          type: string
+          nullable: true
+        volume:
+          type: string
+          nullable: true
+        page:
+          type: string
+          nullable: true
+        opinions:
+          type: array
+          items:
+            type: object
+security:
+  - TokenAuth: []
+  - BasicAuth: []
+  - CookieAuth: []

@@ -1,0 +1,82 @@
+---
+title: Case Search
+---
+
+# Case Search
+
+The CAP API provides powerful search capabilities to find cases across the entire database.
+
+## Search Endpoint
+
+```http
+GET /cases/?search=your+query
+```
+
+## Search Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `search` | string | Full-text search query |
+| `jurisdiction` | string | Filter by jurisdiction ID |
+| `court` | string | Filter by court ID |
+| `decision_date_min` | date | Minimum decision date (YYYY-MM-DD) |
+| `decision_date_max` | date | Maximum decision date (YYYY-MM-DD) |
+| `page_size` | integer | Results per page (max 100) |
+| `page` | integer | Page number |
+
+## Example Requests
+
+### Basic Search
+
+```bash
+curl -X GET "https://api.case.law/v1/cases/?search=first+amendment" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+### Filter by Jurisdiction
+
+```bash
+curl -X GET "https://api.case.law/v1/cases/?search=contract&jurisdiction=cal" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+### Date Range Filter
+
+```bash
+curl -X GET "https://api.case.law/v1/cases/?search=copyright&decision_date_min=2000-01-01&decision_date_max=2020-12-31" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Response Format
+
+```json
+{
+  "count": 1234,
+  "next": "https://api.case.law/v1/cases/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 123456,
+      "url": "https://api.case.law/v1/cases/123456/",
+      "name": "Case Name v. Defendant",
+      "name_abbreviation": "Case Name v. Defendant",
+      "decision_date": "2015-03-15",
+      "citation": "123 F.3d 456",
+      "jurisdiction": {
+        "id": "cal",
+        "name": "California"
+      }
+    }
+  ]
+}
+```
+
+## Pagination
+
+Results are paginated with a default page size of 10. Use the `page_size` parameter to adjust (max 100).
+
+## Tips
+
+- Use specific terms for better results
+- Combine search with jurisdiction filters for targeted queries
+- Use date ranges to find recent or historical cases

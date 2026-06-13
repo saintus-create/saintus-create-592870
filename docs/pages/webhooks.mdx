@@ -1,0 +1,187 @@
+---
+title: Webhooks
+---
+
+# Webhooks
+
+Subscribe to CourtListener events and receive real-time notifications when new data is added or updated.
+
+## Overview
+
+Webhooks allow you to receive HTTP POST notifications when specific events occur in the CourtListener system, enabling real-time data synchronization and automated workflows.
+
+## Supported Events
+
+### Opinion Events
+- `opinion.created` - New opinion added
+- `opinion.updated` - Opinion metadata updated
+- `opinion.deleted` - Opinion removed
+
+### Docket Events
+- `docket.created` - New docket created
+- `docket.updated` - Docket information updated
+- `docket.deleted` - Docket removed
+
+### RECAP Events
+- `recap.document_added` - New RECAP document uploaded
+- `recap.docket_updated` - RECAP docket updated
+
+### Person Events
+- `person.created` - New person added
+- `person.updated` - Person information updated
+
+## Setting Up Webhooks
+
+### Register Webhook
+
+```bash
+curl -X POST "https://www.courtlistener.com/api/rest/v4/webhooks/" \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-server.com/webhook",
+    "events": ["opinion.created", "docket.updated"],
+    "secret": "your-webhook-secret"
+  }'
+```
+
+### Webhook Configuration
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `url` | string | Your webhook endpoint URL |
+| `events` | array | List of events to subscribe to |
+| `secret` | string | Secret for signature verification |
+
+## Webhook Payload
+
+### Opinion Created
+
+```json
+{
+  "event": "opinion.created",
+  "timestamp": "2023-01-15T10:30:00Z",
+  "data": {
+    "id": 123456,
+    "cluster_id": 789012,
+    "court_id": "scotus",
+    "date_created": "2023-01-15T10:30:00Z",
+    "plain_text": "Full opinion text...",
+    "citation": "123 U.S. 456"
+  }
+}
+```
+
+### Docket Updated
+
+```json
+{
+  "event": "docket.updated",
+  "timestamp": "2023-01-15T10:30:00Z",
+  "data": {
+    "id": 123456,
+    "court_id": "ca9",
+    "slug": "case-name-v-defendant",
+    "date_modified": "2023-01-15T10:30:00Z"
+  }
+}
+```
+
+## Security
+
+### Signature Verification
+
+Each webhook includes a signature header for verification:
+
+```bash
+X-Webhook-Signature: sha256=signature_hash
+```
+
+### Verify Signature
+
+```python
+import hmac
+import hashlib
+
+def verify_signature(payload, signature, secret):
+    expected_signature = hmac.new(
+        secret.encode(),
+        payload.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected_signature, signature)
+```
+
+### Best Practices
+- Use HTTPS for webhook URLs
+- Implement signature verification
+- Validate webhook payloads
+- Use secrets for each webhook
+
+## Error Handling
+
+### Retry Logic
+- Automatic retries for failed deliveries
+- Exponential backoff
+- Maximum retry attempts: 5
+- Retry timeout: 24 hours
+
+### Monitoring
+- Track webhook delivery status
+- Monitor error rates
+- Set up alerts for failures
+- Review delivery logs
+
+## Managing Webhooks
+
+### List Webhooks
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/webhooks/" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+### Delete Webhook
+
+```bash
+curl -X DELETE "https://www.courtlistener.com/api/rest/v4/webhooks/{id}/" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+### Update Webhook
+
+```bash
+curl -X PUT "https://www.courtlistener.com/api/rest/v4/webhooks/{id}/" \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "events": ["opinion.created", "opinion.updated"]
+  }'
+```
+
+## Use Cases
+
+### Real-time Alerts
+- Notify when cases are filed
+- Alert on specific court decisions
+- Monitor docket updates
+
+### Data Synchronization
+- Keep databases in sync
+- Update search indexes
+- Maintain cache freshness
+
+### Workflow Automation
+- Trigger analysis pipelines
+- Update internal systems
+- Generate reports automatically
+
+## Limitations
+
+- Maximum 10 webhooks per account
+- Rate limits apply to webhook creation
+- Webhook URLs must be publicly accessible
+- Payload size limit: 1MB
+
+## Support
+For webhook support, contact [Free Law Project](https://www.courtlistener.com/contact/).

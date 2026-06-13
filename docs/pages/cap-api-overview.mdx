@@ -1,0 +1,52 @@
+---
+title: CAP API Overview
+---
+
+# Caselaw Access Project API Overview
+
+The Caselaw Access Project (CAP) API provides programmatic access to over 6.7 million US court cases from the Harvard Law School Library collection. This API makes 360 years of US legal history available through a modern REST interface.
+
+## Key Features
+
+- **Case Search**: Full-text search across the entire case database
+- **Case Retrieval**: Get individual cases with full metadata and text
+- **Jurisdiction Filter**: Filter cases by court jurisdiction
+- **Citation Lookup**: Find cases by legal citation
+- **Court Information**: Access court and jurisdiction metadata
+
+## Authentication
+
+API key required via Authorization header. Sign up at [case.law/user/details](https://case.law/user/details/).
+
+```bash
+Authorization: Token <your-api-key>
+```
+
+## Rate Limits
+
+- Free tier: 500 requests/day
+- Higher limits available for research projects
+
+## Data Coverage
+
+- Over 6.7 million cases
+- All US state and federal courts
+- 360 years of legal history (1658-2018)
+- Territorial courts included
+
+## Getting Started
+
+1. [Sign up for an API key](https://case.law/user/details/)
+2. Explore the [API Reference](#) for available endpoints
+3. Start with [Case Search](#) to find relevant cases
+
+## API Endpoints
+
+- `GET /cases/` - Search for cases
+- `GET /cases/{id}/` - Get a specific case
+- `GET /jurisdictions/` - List all jurisdictions
+- `GET /courts/` - List all courts
+
+## Support
+
+For API support, contact [Harvard Library Innovation Lab](https://lil.law.harvard.edu/).

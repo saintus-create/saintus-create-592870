@@ -1,0 +1,80 @@
+---
+title: Authentication
+---
+
+# Authentication
+
+Each API in this documentation has its own authentication requirements. Below is an overview of the authentication methods for each service.
+
+## CourtListener API
+
+CourtListener supports three authentication methods:
+
+### HTTP Token Authentication (Recommended)
+```bash
+Authorization: Token YOUR_API_KEY
+```
+
+### Cookie/Session Authentication
+```bash
+Cookie: sessionid=YOUR_SESSION_ID
+```
+
+### HTTP Basic Authentication
+```bash
+Authorization: Basic BASE64_ENCODED_CREDENTIALS
+```
+
+**Get your API key**: [CourtListener Account](https://www.courtlistener.com/account/)
+
+## Caselaw Access Project API
+
+### Token Authentication
+```bash
+Authorization: Token YOUR_API_KEY
+```
+
+**Get your API key**: [case.law/user/details](https://case.law/user/details/)
+
+## Congress.gov API
+
+### API Key Parameter
+```bash
+?api_key=YOUR_API_KEY
+```
+
+**Get your API key**: [api.congress.gov/sign-up](https://api.congress.gov/sign-up/)
+
+## Vaquill AI API
+
+### Bearer Token Authentication
+```bash
+Authorization: Bearer vq_key_YOUR_API_KEY
+```
+
+**Get your API key**: [app.vaquill.ai](https://app.vaquill.ai)
+
+## Best Practices
+
+- **Keep keys secure**: Never commit API keys to version control
+- **Use environment variables**: Store keys in `.env` files or environment variables
+- **Rotate keys regularly**: Update API keys periodically for security
+- **Monitor usage**: Track API usage to detect unauthorized access
+- **Use HTTPS**: Always use HTTPS when making API calls
+
+## Example Implementation
+
+```javascript
+// Using environment variables
+const COURTLISTENER_API_KEY = process.env.COURTLISTENER_API_KEY;
+const CAP_API_KEY = process.env.CAP_API_KEY;
+const CONGRESS_API_KEY = process.env.CONGRESS_API_KEY;
+const VAQUILL_API_KEY = process.env.VAQUILL_API_KEY;
+
+// Example fetch with authentication
+fetch('https://www.courtlistener.com/api/rest/v4/search/', {
+  headers: {
+    'Authorization': `Token ${COURTLISTENER_API_KEY}`
+  }
+});
+```

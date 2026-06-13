@@ -1,0 +1,141 @@
+---
+title: Database Replication
+---
+
+# Database Replication
+
+Get direct access to the complete CourtListener database through an isolated PostgreSQL replica for high-performance data access.
+
+## Overview
+
+Database replication provides a complete copy of the CourtListener database, giving you direct SQL access to all data without API rate limits.
+
+## Benefits
+
+### Performance
+- Direct SQL queries for complex data retrieval
+- No API rate limiting
+- Sub-second response times
+- Custom query optimization
+
+### Completeness
+- Access to all data fields
+- Complete historical records
+- Real-time data synchronization
+- Full schema access
+
+### Flexibility
+- Custom queries and joins
+- Data aggregation and analysis
+- Integration with existing databases
+- ETL and data pipeline support
+
+## Getting Started
+
+### Request Access
+
+Contact [Free Law Project](https://www.courtlistener.com/contact/) to request database replication access.
+
+### Connection Details
+
+Once approved, you'll receive:
+- Database connection string
+- Credentials (username/password)
+- Schema documentation
+- Access guidelines
+
+### Connect to Database
+
+```bash
+psql -h your-replica-host -U your-username -d courtlistener
+```
+
+## Schema Overview
+
+### Core Tables
+
+- `search_opinion` - Judicial opinions
+- `search_docket` - Court dockets
+- `search_court` - Court jurisdictions
+- `search_person` - Judges and personnel
+- `search_recapdocument` - RECAP documents
+
+### Relationships
+
+- Opinions belong to clusters
+- Clusters belong to courts
+- Dockets contain opinions
+- People are associated with opinions and dockets
+
+## Example Queries
+
+### Find Recent Opinions
+
+```sql
+SELECT id, date_created, plain_text
+FROM search_opinion
+WHERE date_created > '2023-01-01'
+ORDER BY date_created DESC
+LIMIT 100;
+```
+
+### Count Opinions by Court
+
+```sql
+SELECT court_id, COUNT(*) as opinion_count
+FROM search_opinion
+GROUP BY court_id
+ORDER BY opinion_count DESC;
+```
+
+### Search Full Text
+
+```sql
+SELECT id, plain_text
+FROM search_opinion
+WHERE plain_text ILIKE '%contract breach%'
+LIMIT 50;
+```
+
+## Performance Tips
+
+### Indexing
+- Use existing indexes for common queries
+- Create custom indexes for your use case
+- Analyze query performance with EXPLAIN
+
+### Query Optimization
+- Use specific column selection
+- Implement proper WHERE clauses
+- Use LIMIT for large result sets
+- Consider materialized views for complex queries
+
+### Data Management
+- Monitor connection usage
+- Implement connection pooling
+- Use transactions for data integrity
+- Schedule regular maintenance
+
+## Limitations
+
+### Read-Only Access
+- Database is read-only
+- No write permissions
+- Data synchronization only
+
+### Resource Limits
+- Connection limits apply
+- Query timeout restrictions
+- Resource usage monitoring
+
+### Data Freshness
+- Near real-time synchronization
+- Slight delay from production
+- Regular sync schedule
+
+## Pricing
+
+Database replication is available through commercial agreements with Free Law Project. Contact for pricing details.
+
+## Support
+For database replication support, contact [Free Law Project](https://www.courtlistener.com/contact/).

@@ -1,0 +1,109 @@
+---
+title: Search API
+---
+
+# Search API
+
+Full-text search across the entire CourtListener database including opinions, dockets, and other legal content.
+
+## Search Endpoint
+
+```http
+GET /search/
+```
+
+## Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `q` | string | Yes | Search query string |
+| `court` | string | No | Filter by court jurisdiction |
+| `page` | integer | No | Page number (default: 1) |
+
+## Example Requests
+
+### Basic Search
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/search/?q=first+amendment" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+### Filter by Court
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/search/?q=contract&court=scotus" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+### Pagination
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/search/?q=copyright&page=2" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Response Format
+
+```json
+{
+  "count": 1234,
+  "next": "https://www.courtlistener.com/api/rest/v4/search/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 123456,
+      "type": "Opinion",
+      "score": 0.95,
+      "snippet": "The court held that..."
+    }
+  ]
+}
+```
+
+## Search Tips
+
+### Use Specific Terms
+- Be specific with legal terminology
+- Use quotes for exact phrases: `"breach of contract"`
+- Include relevant legal concepts
+
+### Filter Results
+- Use court parameter for jurisdiction-specific results
+- Combine search terms for better precision
+- Use pagination to explore results
+
+### Result Types
+- **Opinion**: Judicial opinions and decisions
+- **Docket**: Court docket information
+- **Audio**: Oral argument audio files
+- **Person**: Judge and personnel information
+
+## Advanced Search
+
+### Boolean Operators
+- `AND`: contract AND breach
+- `OR`: contract OR tort
+- `NOT`: contract NOT criminal
+
+### Phrase Search
+- `"first amendment"`: Exact phrase match
+- `"due process"`: Specific legal doctrine
+
+### Wildcards
+- `contract*`: contract, contracts, contractual
+- `liabilit*`: liability, liabilities
+
+## Performance
+
+- Search results are ranked by relevance
+- Use specific queries for faster results
+- Filter by court to reduce result set
+- Consider using specific endpoints for targeted searches
+
+## Use Cases
+
+- **Legal Research**: Find relevant case law and precedents
+- **Due Diligence**: Comprehensive legal background checks
+- **Litigation Support**: Research for case preparation
+- **Academic Research**: Legal scholarship and analysis

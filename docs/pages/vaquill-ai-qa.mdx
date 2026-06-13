@@ -1,0 +1,86 @@
+---
+title: AI Legal Q&A
+---
+
+# AI Legal Q&A
+
+Ask legal questions in plain language and get AI-generated answers grounded in real court judgments from 20M+ cases.
+
+## Ask a Question
+
+```http
+POST /ask
+Authorization: Bearer vq_key_YOUR_API_KEY
+```
+
+## Request Body
+
+```json
+{
+  "question": "What are the elements of breach of contract?",
+  "jurisdiction": "federal",
+  "mode": "standard",
+  "include_citations": true
+}
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `question` | string | The legal question to ask (required) |
+| `jurisdiction` | string | Optional jurisdiction filter (e.g., "federal", "california") |
+| `mode` | string | Research mode: "standard" or "deep" |
+| `include_citations` | boolean | Whether to include citation references |
+
+## Example Request
+
+```bash
+curl -X POST "https://api.vaquill.ai/v1/ask" \
+  -H "Authorization: Bearer vq_key_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What are the elements of breach of contract?",
+    "jurisdiction": "federal",
+    "mode": "standard",
+    "include_citations": true
+  }'
+```
+
+## Response Format
+
+```json
+{
+  "answer": "To establish a breach of contract claim, a plaintiff must prove four elements: (1) the existence of a valid contract, (2) the plaintiff performed their obligations under the contract, (3) the defendant failed to perform their obligations, and (4) the plaintiff suffered damages as a result...",
+  "citations": [
+    {
+      "case_name": "Hawkins v. McGee",
+      "citation": "146 A. 641 (N.H. 1929)",
+      "court": "New Hampshire Supreme Court",
+      "year": 1929,
+      "url": "https://..."
+    }
+  ],
+  "confidence": 0.92,
+  "credits_used": 5
+}
+```
+
+## Research Modes
+
+### Standard Mode
+- Quick answers with relevant citations
+- Lower credit cost
+- Ideal for general legal questions
+
+### Deep Mode
+- Comprehensive research with extensive analysis
+- Higher credit cost
+- Best for complex legal issues
+
+## Tips
+
+- Be specific in your questions for better results
+- Use jurisdiction filters for state-specific questions
+- Enable citations for verification and further research
+- Start with standard mode, upgrade to deep if needed

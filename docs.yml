@@ -1,0 +1,162 @@
+# yaml-language-server: $schema=https://schema.buildwithfern.dev/docs-yml.json
+
+instances:
+  - url: courtlistener.docs.buildwithfern.com
+    edit-this-page:
+      github:
+        owner: saintus-create
+        repo: court
+        branch: main
+      launch: dashboard
+title: CourtListener | Legal APIs and Data
+layout:
+  searchbar-placement: header
+  page-width: full
+  tabs-placement: header
+tabs:
+  home:
+    display-name: Home
+    icon: home
+  api-reference:
+    display-name: API Reference
+    icon: puzzle
+  Services:
+    display-name: Services
+    icon: server
+navigation:
+  - tab: home
+    layout:
+      - section: Get Started
+        contents:
+          - page: Welcome
+            path: docs/pages/welcome.mdx
+            icon: fa-solid fa-house
+          - page: Services Overview
+            path: docs/pages/services-overview.mdx
+            icon: fa-solid fa-layer-group
+          - page: Authentication
+            path: docs/pages/authentication.mdx
+            icon: fa-solid fa-key
+          - page: Rate Limits
+            path: docs/pages/rate-limits.mdx
+            icon: fa-solid fa-gauge-high
+          - page: Pricing & Access
+            path: docs/pages/pricing.mdx
+            icon: fa-solid fa-tag
+      - section: Documentation
+        contents:
+          - page: API Reference Overview
+            path: docs/pages/api-reference-overview.mdx
+            icon: fa-duotone fa-book
+          - page: Data Quality
+            path: docs/pages/data-quality.mdx
+            icon: fa-solid fa-database
+          - page: Support
+            path: docs/pages/support.mdx
+            icon: fa-solid fa-headset
+      - section: Changelog
+        contents:
+          - changelog
+  - tab: api-reference
+    layout:
+      - section: CourtListener API
+        contents:
+          - page: REST API Overview
+            path: docs/pages/rest-api-overview.mdx
+            icon: fa-solid fa-cloud
+          - page: Case Law API
+            path: docs/pages/case-law-api.mdx
+            icon: fa-solid fa-scale-balanced
+          - page: Search API
+            path: docs/pages/search-api.mdx
+            icon: fa-solid fa-magnifying-glass
+          - page: PACER & RECAP
+            path: docs/pages/recap-api.mdx
+            icon: fa-solid fa-folder-open
+          - page: Citation Lookup
+            path: docs/pages/citation-api.mdx
+            icon: fa-solid fa-link
+      - api: CourtListener REST API
+        api-name: courtlistener-rest-api
+      - section: Caselaw Access Project API
+        contents:
+          - page: CAP API Overview
+            path: docs/pages/cap-api-overview.mdx
+            icon: fa-solid fa-book-open
+          - page: Case Search
+            path: docs/pages/cap-case-search.mdx
+            icon: fa-solid fa-search
+          - page: Jurisdictions
+            path: docs/pages/cap-jurisdictions.mdx
+            icon: fa-solid fa-gavel
+      - api: Caselaw Access Project API
+        api-name: caselaw-access-project-api
+      - section: Congress.gov API
+        contents:
+          - page: Congress API Overview
+            path: docs/pages/congress-api-overview.mdx
+            icon: fa-solid fa-landmark
+          - page: Bills & Legislation
+            path: docs/pages/congress-bills.mdx
+            icon: fa-solid fa-scroll
+          - page: Members & Committees
+            path: docs/pages/congress-members.mdx
+            icon: fa-solid fa-users
+      - api: Congress.gov API
+        api-name: congress-gov-api
+      - section: Vaquill AI API
+        contents:
+          - page: Vaquill AI Overview
+            path: docs/pages/vaquill-ai-overview.mdx
+            icon: fa-solid fa-brain
+          - page: AI Legal Q&A
+            path: docs/pages/vaquill-ai-qa.mdx
+            icon: fa-solid fa-comments
+          - page: Case Law Search
+            path: docs/pages/vaquill-ai-search.mdx
+            icon: fa-solid fa-search-location
+      - api: Vaquill AI API
+        api-name: vaquill-ai-api
+  - tab: Services
+    layout:
+      - section: Data Services
+        contents:
+          - page: Database Replication
+            path: docs/pages/replication.mdx
+            icon: fa-solid fa-database
+          - page: Bulk Data Files
+            path: docs/pages/bulk-data.mdx
+            icon: fa-solid fa-file-csv
+      - section: Event Services
+        contents:
+          - page: Webhooks
+            path: docs/pages/webhooks.mdx
+            icon: fa-solid fa-bell
+          - page: MCP Server
+            path: docs/pages/mcp-server.mdx
+            icon: fa-solid fa-robot
+navbar-links:
+  - type: filled
+    text: Edit
+    url: https://dashboard.buildwithfern.com
+colors:
+  accent-primary:
+    light: "#FFFFFF"
+    dark: "#FFFFFF"
+  background:
+    light: "#FFFFFF"
+    dark: "#0D0D0D"
+  border:
+    light: "#DADADA"
+    dark: "#373737"
+theme:
+  page-actions: toolbar
+  footer-nav: minimal
+logo:
+  dark: docs/assets/logo-dark.png
+  light: docs/assets/logo-light.png
+  height: 20
+  href: https://www.courtlistener.com
+favicon: docs/assets/favicon.svg
+css: styles.css
+ai-search: {}

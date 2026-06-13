@@ -1,0 +1,59 @@
+---
+title: Vaquill AI Overview
+---
+
+# Vaquill AI API Overview
+
+Vaquill AI API provides AI-powered legal research capabilities with access to millions of US federal and state court opinions, the complete US Code, CFR, and all 50 state statute codes.
+
+## Key Features
+
+- **AI Legal Q&A**: Ask legal questions and get AI-generated answers grounded in real court judgments
+- **Case Law Search**: Search millions of federal and state court opinions with semantic search
+- **Statute Lookup**: Access the complete US Code, CFR, and all 50 state codes
+- **Citation Resolution**: Verify and resolve legal citations automatically
+- **Contract Review**: AI-powered contract analysis and review
+- **Chronology Builder**: Build timelines across legal documents
+
+## Authentication
+
+API key required via Authorization header: Bearer `<your-api-key>`
+
+```bash
+Authorization: Bearer vq_key_YOUR_API_KEY
+```
+
+Get your API key from [app.vaquill.ai](https://app.vaquill.ai).
+
+## Pricing
+
+Free tier: 500 credits/month. No enterprise contract required.
+
+See [pricing](https://vaquill.ai/pricing) for credit costs per endpoint.
+
+## Data Coverage
+
+- 8M+ US federal and state court opinions
+- 1.35M+ statute sections (USC, CFR, 50-state codes)
+- U.S. Constitution, Federal Rules, Executive Orders
+- 51 US jurisdictions (50 states + federal)
+
+## Getting Started
+
+1. [Sign up for an API key](https://app.vaquill.ai)
+2. Explore the [API Reference](#) for available endpoints
+3. Start with [AI Legal Q&A](#) to ask legal questions
+
+## API Endpoints
+
+- `POST /ask` - Ask a legal question
+- `POST /search/cases` - Search case law
+- `POST /statutes/lookup` - Lookup specific statutes
+- `POST /statutes/search` - Search statutes
+- `POST /citations/resolve` - Resolve citations
+- `POST /contracts/analyze` - Analyze contracts
+- `GET /credits/balance` - Check credit balance
+
+## Support
+
+For API support, visit [vaquill.ai/contact](https://vaquill.ai/contact).

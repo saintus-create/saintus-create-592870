@@ -1,0 +1,235 @@
+---
+title: MCP Server
+---
+
+# MCP Server
+
+Access CourtListener data through the Model Context Protocol (MCP) server for AI assistant integration.
+
+## Overview
+
+The MCP Server provides a standardized interface for AI assistants like Claude, Cursor, and VS Code to access CourtListener data, enabling natural language queries and intelligent legal research.
+
+## Getting Started
+
+### Prerequisites
+- AI assistant that supports MCP (Claude, Cursor, VS Code)
+- CourtListener API credentials
+- MCP client configuration
+
+### Installation
+
+Add the MCP server to your AI assistant configuration:
+
+```json
+{
+  "mcpServers": {
+    "courtlistener": {
+      "command": "python",
+      "args": ["-m", "courtlistener_mcp"],
+      "env": {
+        "COURTLISTENER_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+## Available Tools
+
+### Search Cases
+Search for cases using natural language queries.
+
+```python
+# AI assistant can call
+courtlistener.search_cases(
+    query="contract breach damages",
+    jurisdiction="federal",
+    limit=10
+)
+```
+
+### Get Opinion
+Retrieve specific opinion details.
+
+```python
+courtlistener.get_opinion(opinion_id=123456)
+```
+
+### Lookup Citation
+Verify legal citations.
+
+```python
+courtlistener.lookup_citation("123 F.3d 456")
+```
+
+### Get Docket
+Access docket information.
+
+```python
+courtlistener.get_docket(docket_id=789012)
+```
+
+## Usage Examples
+
+### Natural Language Queries
+
+```
+User: "Find cases about contract breach damages"
+AI: [Uses courtlistener.search_cases] 
+    I found 10 relevant cases about contract breach damages...
+```
+
+### Citation Verification
+
+```
+User: "Is 123 F.3d 456 a real case?"
+AI: [Uses courtlistener.lookup_citation]
+    Yes, 123 F.3d 456 is a valid citation for Smith v. Jones...
+```
+
+### Case Analysis
+
+```
+User: "Tell me about Supreme Court cases from 2023"
+AI: [Uses courtlistener.search_cases]
+    Here are notable Supreme Court cases from 2023...
+```
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `COURTLISTENER_API_KEY` | Yes | Your CourtListener API key |
+| `COURTLISTENER_API_URL` | No | Custom API URL (default: official) |
+
+### Advanced Configuration
+
+```json
+{
+  "mcpServers": {
+    "courtlistener": {
+      "command": "python",
+      "args": ["-m", "courtlistener_mcp"],
+      "env": {
+        "COURTLISTENER_API_KEY": "your-api-key",
+        "COURTLISTENER_API_URL": "https://custom.api.url",
+        "LOG_LEVEL": "debug"
+      }
+    }
+  }
+}
+```
+
+## Integration Examples
+
+### Claude Desktop
+
+Add to Claude Desktop configuration file:
+
+```json
+{
+  "mcpServers": {
+    "courtlistener": {
+      "command": "python",
+      "args": ["-m", "courtlistener_mcp"],
+      "env": {
+        "COURTLISTENER_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Configure in Cursor settings:
+
+```json
+{
+  "mcp.servers": [
+    {
+      "name": "courtlistener",
+      "command": "python",
+      "args": ["-m", "courtlistener_mcp"],
+      "env": {
+        "COURTLISTENER_API_KEY": "your-api-key"
+      }
+    }
+  ]
+}
+```
+
+### VS Code
+
+Install MCP extension and configure:
+
+```json
+{
+  "mcp.servers": {
+    "courtlistener": {
+      "command": "python",
+      "args": ["-m", "courtlistener_mcp"],
+      "env": {
+        "COURTLISTENER_API_KEY": "your-api-key"
+      }
+    }
+  }
+}
+```
+
+## Features
+
+### Natural Language Processing
+- Understands legal terminology
+- Handles complex queries
+- Provides contextual responses
+
+### Data Enrichment
+- Citation verification
+- Case relationship mapping
+- Jurisdiction filtering
+
+### Error Handling
+- Graceful error messages
+- Automatic retries
+- Rate limit awareness
+
+## Best Practices
+
+### Query Optimization
+- Be specific in your queries
+- Use jurisdiction filters when possible
+- Limit result sets for faster responses
+
+### Error Handling
+- Handle API errors gracefully
+- Implement retry logic
+- Monitor rate limits
+
+### Security
+- Keep API keys secure
+- Use environment variables
+- Rotate credentials regularly
+
+## Troubleshooting
+
+### Connection Issues
+- Verify API key is valid
+- Check network connectivity
+- Ensure MCP server is running
+
+### Query Problems
+- Use natural language queries
+- Check for typos in citations
+- Verify jurisdiction codes
+
+### Rate Limits
+- Monitor API usage
+- Implement caching
+- Use efficient queries
+
+## Support
+For MCP server support, contact [Free Law Project](https://www.courtlistener.com/contact/).

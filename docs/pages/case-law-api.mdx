@@ -1,0 +1,118 @@
+---
+title: Case Law API
+---
+
+# Case Law API
+
+Access millions of judicial opinions and case clusters through the CourtListener REST API.
+
+## List Opinions
+
+```http
+GET /opinions/
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | integer | Page number (default: 1) |
+| `court` | string | Filter by court |
+| `date_created` | date | Filter by creation date |
+
+### Example Request
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/opinions/?page=1" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Get Specific Opinion
+
+```http
+GET /opinions/{id}/
+```
+
+### Example
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/opinions/123456/" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## List Case Clusters
+
+```http
+GET /clusters/
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | integer | Page number (default: 1) |
+| `court` | string | Filter by court |
+
+### Example Request
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/clusters/?page=1" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Get Specific Cluster
+
+```http
+GET /clusters/{id}/
+```
+
+### Example
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/clusters/123456/" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Response Format
+
+### Opinion Response
+
+```json
+{
+  "id": 123456,
+  "cluster_id": 789012,
+  "author_id": 345678,
+  "date_created": "2023-01-15T10:30:00Z",
+  "plain_text": "Full opinion text...",
+  "html": "<html>...</html>",
+  "text": "Case text..."
+}
+```
+
+### Cluster Response
+
+```json
+{
+  "id": 789012,
+  "date_filed": "2023-01-15",
+  "slug": "case-name-v-defendant",
+  "citation_count": 45,
+  "nature_of_suit": "Contract Dispute",
+  "attorneys": ["Attorney Name", "Another Attorney"],
+  "headnotes": ["Key point 1", "Key point 2"]
+}
+```
+
+## Use Cases
+
+- **Legal Research**: Find relevant case law for legal arguments
+- **Precedent Analysis**: Track citation patterns and influence
+- **Case Monitoring**: Follow specific cases or courts
+- **Data Analysis**: Analyze trends in judicial decisions
+
+## Tips
+
+- Use clusters for case-level information
+- Use opinions for individual judge decisions
+- Filter by court for jurisdiction-specific research
+- Check citation_count for influential cases

@@ -1,0 +1,101 @@
+---
+title: REST API Overview
+---
+
+# CourtListener REST API Overview
+
+The CourtListener REST API provides comprehensive access to legal data including case law, court opinions, docket information, PACER data, oral arguments, and more.
+
+## Base URL
+
+```
+https://www.courtlistener.com/api/rest/v4
+```
+
+## Authentication
+
+Three authentication methods are supported:
+
+### HTTP Token Authentication (Recommended)
+```bash
+Authorization: Token YOUR_API_KEY
+```
+
+### Cookie/Session Authentication
+```bash
+Cookie: sessionid=YOUR_SESSION_ID
+```
+
+### HTTP Basic Authentication
+```bash
+Authorization: Basic BASE64_ENCODED_CREDENTIALS
+```
+
+## Rate Limits
+
+- **5 requests/minute**
+- **50 requests/hour**
+- **125 requests/day**
+
+Free Law Project memberships and commercial agreements available for expanded access.
+
+## Key Endpoints
+
+### Search
+- `GET /search/` - Full-text search across the database
+
+### Opinions
+- `GET /opinions/` - List judicial opinions
+- `GET /opinions/{id}/` - Get specific opinion
+
+### Clusters
+- `GET /clusters/` - List case clusters
+- `GET /clusters/{id}/` - Get specific cluster
+
+### Dockets
+- `GET /dockets/` - List court dockets
+
+### Courts
+- `GET /courts/` - List court jurisdictions
+- `GET /courts/{id}/` - Get specific court
+
+### Audio
+- `GET /audio/` - List oral argument audio files
+
+### People
+- `GET /people/` - List judges and personnel
+
+### Financial Disclosures
+- `GET /financial-disclosures/` - List financial disclosure reports
+
+### RECAP
+- `GET /recap/` - Access PACER data via RECAP
+
+### Citation Lookup
+- `POST /citation-lookup/` - Verify legal citations
+
+## Response Format
+
+All endpoints return JSON responses with consistent structure:
+
+```json
+{
+  "count": 1234,
+  "next": "https://...",
+  "previous": null,
+  "results": [...]
+}
+```
+
+## Pagination
+
+Use `page` parameter for pagination (default: 1).
+
+## Getting Started
+
+1. [Get your API key](https://www.courtlistener.com/account/)
+2. Review the [API Reference](#) for detailed endpoint documentation
+3. Start with the [Search API](#) to explore the database
+
+## Support
+For API support, contact [CourtListener](https://www.courtlistener.com/contact/).

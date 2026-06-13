@@ -1,0 +1,737 @@
+openapi: 3.1.0
+servers:
+  - url: https://api.congress.gov/v3
+    description: Congress.gov API v3
+info:
+  description: |
+    The Congress.gov API provides programmatic access to legislative data from the U.S. Congress,
+    including bills, amendments, members, committees, and more. This official API from the Library
+    of Congress makes federal legislative information available in machine-readable formats.
+    
+    ### Key Features
+    - **Bill Tracking**: Search and retrieve bill information, text, and status
+    - **Amendment Data**: Access bill amendments and their details
+    - **Member Information**: Get data on current and former Members of Congress
+    - **Committee Data**: Access committee assignments and hearings
+    - **Congressional Records**: Access the Congressional Record and related documents
+    - **Summaries**: Retrieve bill summaries written by Congressional Research Service
+    
+    ### Authentication
+    API key required via api_key parameter. Sign up at https://api.congress.gov/sign-up/
+    
+    ### Rate Limits
+    5,000 requests per hour per API key
+    
+    ### Data Coverage
+    - Bills from 1973 (93rd Congress) to present
+    - Some historical bills from 1799-1873 (6th-42nd Congresses)
+    - Current and former Members of Congress
+    - Committee data and hearings
+    - Roll call votes
+    
+  version: 3.0.0
+  title: Congress.gov API
+  termsOfService: "https://www.congress.gov/legal"
+  contact:
+    name: Congress.gov API Support
+    url: https://github.com/LibraryOfCongress/api.congress.gov/issues
+    email: congress.gov@loc.gov
+  license:
+    name: Public Domain
+    url: "https://www.usa.gov/government-works"
+tags:
+  - name: bills
+    description: Bill search and retrieval
+  - name: amendments
+    description: Amendment data
+  - name: members
+    description: Member of Congress information
+  - name: committees
+    description: Committee data
+  - name: votes
+    description: Roll call vote data
+paths:
+  /bill:
+    get:
+      tags:
+        - bills
+      summary: List bills
+      description: Retrieve list of bills with filtering options
+      operationId: listBills
+      parameters:
+        - name: api_key
+          in: query
+          description: Your API key
+          required: true
+          schema:
+            type: string
+        - name: congress
+          in: query
+          description: Congress number (e.g., 117 for 117th Congress)
+          schema:
+            type: integer
+        - name: billType
+          in: query
+          description: Bill type (hr, s, hres, sres, hjres, sjres, hconres, sconres)
+          schema:
+            type: string
+            enum: [hr, s, hres, sres, hjres, sjres, hconres, sconres]
+        - name: limit
+          in: query
+          description: Number of results to return (max 250)
+          schema:
+            type: integer
+            default: 20
+            maximum: 250
+        - name: offset
+          in: query
+          description: Starting record number
+          schema:
+            type: integer
+            default: 0
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        "200":
+          description: List of bills
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bills:
+                    type: object
+                    properties:
+                      bill:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Bill"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+        "401":
+          description: Invalid API key
+        "429":
+          description: Rate limit exceeded
+  /bill/{congress}/{billType}/{billNumber}:
+    get:
+      tags:
+        - bills
+      summary: Get bill details
+      description: Retrieve detailed information for a specific bill
+      operationId: getBill
+      parameters:
+        - name: api_key
+          in: query
+          description: Your API key
+          required: true
+          schema:
+            type: string
+        - name: congress
+          in: path
+          description: Congress number
+          required: true
+          schema:
+            type: integer
+        - name: billType
+          in: path
+          description: Bill type
+          required: true
+          schema:
+            type: string
+            enum: [hr, s, hres, sres, hjres, sjres, hconres, sconres]
+        - name: billNumber
+          in: path
+          description: Bill number
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        "200":
+          description: Bill details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bill:
+                    $ref: "#/components/schemas/BillDetail"
+        "404":
+          description: Bill not found
+  /bill/{congress}/{billType}/{billNumber}/text:
+    get:
+      tags:
+        - bills
+      summary: Get bill text
+      description: Retrieve the full text of a bill
+      operationId: getBillText
+      parameters:
+        - name: api_key
+          in: query
+          description: Your API key
+          required: true
+          schema:
+            type: string
+        - name: congress
+          in: path
+          description: Congress number
+          required: true
+          schema:
+            type: integer
+        - name: billType
+          in: path
+          description: Bill type
+          required: true
+          schema:
+            type: string
+            enum: [hr, s, hres, sres, hjres, sjres, hconres, sconres]
+        - name: billNumber
+          in: path
+          description: Bill number
+          required: true
+          schema:
+            type: integer
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        "200":
+          description: Bill text
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  textVersions:
+                    type: object
+                    properties:
+                      textVersion:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/TextVersion"
+  /amendment:
+    get:
+      tags:
+        - amendments
+      summary: List amendments
+      description: Retrieve list of amendments
+      operationId: listAmendments
+      parameters:
+        - name: api_key
+          in: query
+          description: Your API key
+          required: true
+          schema:
+            type: string
+        - name: congress
+          in: query
+          description: Congress number
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of results to return (max 250)
+          schema:
+            type: integer
+            default: 20
+            maximum: 250
+        - name: offset
+          in: query
+          description: Starting record number
+          schema:
+            type: integer
+            default: 0
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        "200":
+          description: List of amendments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  amendments:
+                    type: object
+                    properties:
+                      amendment:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Amendment"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+  /member:
+    get:
+      tags:
+        - members
+      summary: List members
+      description: Retrieve list of Members of Congress
+      operationId: listMembers
+      parameters:
+        - name: api_key
+          in: query
+          description: Your API key
+          required: true
+          schema:
+            type: string
+        - name: congress
+          in: query
+          description: Congress number
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          description: Number of results to return (max 250)
+          schema:
+            type: integer
+            default: 20
+            maximum: 250
+        - name: offset
+          in: query
+          description: Starting record number
+          schema:
+            type: integer
+            default: 0
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        "200":
+          description: List of members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: object
+                    properties:
+                      member:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Member"
+                  pagination:
+                    $ref: "#/components/schemas/Pagination"
+  /member/{memberId}:
+    get:
+      tags:
+        - members
+      summary: Get member details
+      description: Retrieve detailed information for a specific member
+      operationId: getMember
+      parameters:
+        - name: api_key
+          in: query
+          description: Your API key
+          required: true
+          schema:
+            type: string
+        - name: memberId
+          in: path
+          description: Member ID
+          required: true
+          schema:
+            type: string
+        - name: format
+          in: query
+          description: Response format
+          schema:
+            type: string
+            enum: [json, xml]
+            default: json
+      responses:
+        "200":
+          description: Member details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  member:
+                    $ref: "#/components/schemas/MemberDetail"
+        "404":
+          description: Member not found
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: api_key
+      description: Your Congress.gov API key from api.data.gov
+  schemas:
+    Bill:
+      type: object
+      properties:
+        congress:
+          type: integer
+        billType:
+          type: string
+        billNumber:
+          type: integer
+        title:
+          type: string
+        latestAction:
+          $ref: "#/components/schemas/Action"
+        relationshipDetails:
+          $ref: "#/components/schemas/RelationshipDetails"
+    BillDetail:
+      type: object
+      properties:
+        congress:
+          type: integer
+        billType:
+          type: string
+        billNumber:
+          type: integer
+        title:
+          type: string
+        originChamber:
+          type: string
+        originChamberCode:
+          type: string
+        type:
+          type: string
+        introducedDate:
+          type: string
+          format: date
+        sponsor:
+          $ref: "#/components/schemas/Sponsor"
+        cosponsors:
+          $ref: "#/components/schemas/Cosponsors"
+        policyArea:
+          $ref: "#/components/schemas/PolicyArea"
+        subjects:
+          $ref: "#/components/schemas/Subjects"
+        summaries:
+          $ref: "#/components/schemas/Summaries"
+        titles:
+          $ref: "#/components/schemas/Titles"
+        actions:
+          $ref: "#/components/schemas/Actions"
+        committees:
+          $ref: "#/components/schemas/Committees"
+        amendments:
+          $ref: "#/components/schemas/Amendments"
+        relatedBills:
+          $ref: "#/components/schemas/RelatedBills"
+        textVersions:
+          $ref: "#/components/schemas/TextVersions"
+        latestAction:
+          $ref: "#/components/schemas/Action"
+    Action:
+      type: object
+      properties:
+        actionCode:
+          type: string
+        actionDate:
+          type: string
+          format: date
+        text:
+          type: string
+    Sponsor:
+      type: object
+      properties:
+        bioguideId:
+          type: string
+        fullName:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        party:
+          type: string
+        state:
+          type: string
+        district:
+          type: integer
+          nullable: true
+    Cosponsors:
+      type: object
+      properties:
+        cosponsor:
+          type: array
+          items:
+            $ref: "#/components/schemas/Cosponsor"
+    Cosponsor:
+      type: object
+      properties:
+        bioguideId:
+          type: string
+        fullName:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        party:
+          type: string
+        state:
+          type: string
+        district:
+          type: integer
+          nullable: true
+        sponsorshipDate:
+          type: string
+          format: date
+        isOriginalCosponsor:
+          type: boolean
+    PolicyArea:
+      type: object
+      properties:
+        name:
+          type: string
+    Subjects:
+      type: object
+      properties:
+        subject:
+          type: array
+          items:
+            $ref: "#/components/schemas/Subject"
+    Subject:
+      type: object
+      properties:
+        name:
+          type: string
+        legislativeSubjects:
+          type: array
+          items:
+            type: string
+    Summaries:
+      type: object
+      properties:
+        summary:
+          type: array
+          items:
+            $ref: "#/components/schemas/Summary"
+    Summary:
+      type: object
+      properties:
+        versionCode:
+          type: string
+        actionDate:
+          type: string
+          format: date
+        text:
+          type: string
+        updateDate:
+          type: string
+          format: date
+    Titles:
+      type: object
+      properties:
+        title:
+          type: array
+          items:
+            $ref: "#/components/schemas/Title"
+    Title:
+      type: object
+      properties:
+        title:
+          type: string
+        titleType:
+          type: string
+        chamberCode:
+          type: string
+          nullable: true
+    Actions:
+      type: object
+      properties:
+        action:
+          type: array
+          items:
+            $ref: "#/components/schemas/Action"
+    Committees:
+      type: object
+      properties:
+        committee:
+          type: array
+          items:
+            $ref: "#/components/schemas/Committee"
+    Committee:
+      type: object
+      properties:
+        systemCode:
+          type: string
+        name:
+          type: string
+        chamber:
+          type: string
+        type:
+          type: string
+        subcommittees:
+          type: object
+          properties:
+            committee:
+              type: array
+              items:
+                $ref: "#/components/schemas/Committee"
+    Amendments:
+      type: object
+      properties:
+        amendment:
+          type: array
+          items:
+            $ref: "#/components/schemas/Amendment"
+    Amendment:
+      type: object
+      properties:
+        congress:
+          type: integer
+        amendmentType:
+          type: string
+        amendmentNumber:
+          type: integer
+        description:
+          type: string
+        latestAction:
+          $ref: "#/components/schemas/Action"
+    RelatedBills:
+      type: object
+      properties:
+        bill:
+          type: array
+          items:
+            $ref: "#/components/schemas/Bill"
+    TextVersions:
+      type: object
+      properties:
+        textVersion:
+          type: array
+          items:
+            $ref: "#/components/schemas/TextVersion"
+    TextVersion:
+      type: object
+      properties:
+        type:
+          type: string
+        date:
+          type: string
+          format: date
+        formats:
+          $ref: "#/components/schemas/Formats"
+    Formats:
+      type: object
+      properties:
+        format:
+          type: array
+          items:
+            $ref: "#/components/schemas/Format"
+    Format:
+      type: object
+      properties:
+        url:
+          type: string
+        type:
+          type: string
+    RelationshipDetails:
+      type: object
+      properties:
+        congress:
+          type: integer
+        billType:
+          type: string
+        billNumber:
+          type: integer
+    Member:
+      type: object
+      properties:
+        bioguideId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        party:
+          type: string
+        state:
+          type: string
+        district:
+          type: integer
+          nullable: true
+    MemberDetail:
+      type: object
+      properties:
+        bioguideId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        middleName:
+          type: string
+          nullable: true
+        nickName:
+          type: string
+          nullable: true
+        party:
+          type: string
+        state:
+          type: string
+        district:
+          type: integer
+          nullable: true
+        birthDate:
+          type: string
+          format: date
+        deathDate:
+          type: string
+          format: date
+          nullable: true
+        terms:
+          $ref: "#/components/schemas/Terms"
+    Terms:
+      type: object
+      properties:
+        item:
+          type: array
+          items:
+            $ref: "#/components/schemas/Term"
+    Term:
+      type: object
+      properties:
+        chamber:
+          type: string
+        congress:
+          type: integer
+        startYear:
+          type: integer
+        endYear:
+          type: integer
+    Pagination:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+security:
+  - ApiKeyAuth: []

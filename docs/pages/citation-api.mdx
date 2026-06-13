@@ -1,0 +1,125 @@
+---
+title: Citation Lookup
+---
+
+# Citation Lookup API
+
+Verify legal citations and find corresponding cases to fight AI hallucinations and ensure accuracy in legal research.
+
+## Lookup Citation
+
+```http
+POST /citation-lookup/
+```
+
+## Request Body
+
+```json
+{
+  "citation": "123 F.3d 456"
+}
+```
+
+## Example Request
+
+```bash
+curl -X POST "https://www.courtlistener.com/api/rest/v4/citation-lookup/" \
+  -H "Authorization: Token YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "citation": "123 F.3d 456"
+  }'
+```
+
+## Response Format
+
+```json
+{
+  "citation": "123 F.3d 456",
+  "cluster_id": 789012,
+  "year": 2020,
+  "reporter": "F.3d",
+  "volume": "123",
+  "page": "456",
+  "opinions": [
+    {
+      "id": 123456,
+      "cluster_id": 789012,
+      "citation": "123 F.3d 456",
+      "court": "ca9",
+      "date_filed": "2020-03-15"
+    }
+  ]
+}
+```
+
+## Citation Formats
+
+The API supports various citation formats:
+
+### Federal Citations
+- `123 F.3d 456` - Federal Reporter
+- `456 U.S. 789` - Supreme Court Reporter
+- `789 F. Supp. 2d 123` - Federal Supplement
+
+### State Citations
+- `123 Cal. 456` - California Reports
+- `456 N.Y.S.2d 789` - New York Supplement
+- `789 N.E.2d 123` - Northeastern Reporter
+
+### Specialty Citations
+- `123 S. Ct. 456` - Supreme Court Reporter
+- `456 B.R. 789` - Bankruptcy Reporter
+
+## Use Cases
+
+### Verify Citations
+- Check if a citation is valid
+- Find the corresponding case
+- Ensure accuracy in legal documents
+
+### Fight AI Hallucinations
+- Verify AI-generated legal citations
+- Cross-reference AI responses
+- Ensure factual accuracy
+
+### Legal Research
+- Find cases by citation
+- Explore related opinions
+- Track citation history
+
+## Best Practices
+
+### Citation Normalization
+- Use standard citation formats
+- Include reporter abbreviations
+- Verify court abbreviations
+
+### Error Handling
+- Handle invalid citations gracefully
+- Check for multiple matches
+- Verify court jurisdiction
+
+### Integration
+- Use for citation verification in AI systems
+- Implement in document review workflows
+- Add to legal research tools
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `citation` | string | The original citation |
+| `cluster_id` | integer | Case cluster ID |
+| `year` | integer | Year of decision |
+| `reporter` | string | Reporter abbreviation |
+| `volume` | string | Volume number |
+| `page` | string | Page number |
+| `opinions` | array | Array of matching opinions |
+
+## Tips
+
+- Use exact citation formats for best results
+- Check the `opinions` array for multiple matches
+- Use `cluster_id` to get full case details
+- Verify court jurisdiction when multiple matches exist

@@ -1,0 +1,400 @@
+openapi: 3.1.0
+servers:
+  - url: https://api.case.law/v1
+    description: Caselaw Access Project API v1
+info:
+  description: |
+    The Caselaw Access Project (CAP) API provides programmatic access to over 6.7 million US court cases 
+    from the Harvard Law School Library collection. This API makes 360 years of US legal history available 
+    through a modern REST interface, covering all state and federal courts including territorial courts.
+    
+    ### Key Features
+    - **Case Search**: Full-text search across the entire case database
+    - **Case Retrieval**: Get individual cases with full metadata and text
+    - **Jurisdiction Filter**: Filter cases by court jurisdiction
+    - **Citation Lookup**: Find cases by legal citation
+    - **Court Information**: Access court and jurisdiction metadata
+    - **Bulk Data**: Option for bulk data downloads for research
+    
+    ### Authentication
+    API key required via Authorization header. Sign up at https://case.law/user/details/
+    
+    ### Rate Limits
+    Free tier: 500 requests/day. Higher limits available for research projects.
+    
+    ### Data Coverage
+    - Over 6.7 million cases
+    - All US state and federal courts
+    - 360 years of legal history (1658-2018)
+    - Territorial courts included
+    
+  version: 1.0.0
+  title: Caselaw Access Project API
+  termsOfService: "https://case.law/terms/"
+  contact:
+    name: Harvard Library Innovation Lab
+    url: https://lil.law.harvard.edu/
+    email: lil@law.harvard.edu
+  license:
+    name: CC0
+    url: "https://creativecommons.org/publicdomain/zero/1.0/"
+tags:
+  - name: cases
+    description: Case search and retrieval
+  - name: jurisdictions
+    description: Jurisdiction and court information
+  - name: citations
+    description: Citation lookup and verification
+paths:
+  /cases/:
+    get:
+      tags:
+        - cases
+      summary: Search cases
+      description: Search for cases with various filters including full-text search, jurisdiction, date range, and more
+      operationId: searchCases
+      parameters:
+        - name: search
+          in: query
+          description: Full-text search query
+          schema:
+            type: string
+        - name: jurisdiction
+          in: query
+          description: Filter by jurisdiction ID
+          schema:
+            type: string
+        - name: court
+          in: query
+          description: Filter by court ID
+          schema:
+            type: string
+        - name: decision_date_min
+          in: query
+          description: Minimum decision date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: decision_date_max
+          in: query
+          description: Maximum decision date (YYYY-MM-DD)
+          schema:
+            type: string
+            format: date
+        - name: page_size
+          in: query
+          description: Number of results per page (max 100)
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            default: 1
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    nullable: true
+                  previous:
+                    type: string
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Case"
+        "401":
+          description: Authentication required
+        "429":
+          description: Rate limit exceeded
+  /cases/{id}/:
+    get:
+      tags:
+        - cases
+      summary: Get case by ID
+      description: Retrieve a specific case by its ID with full details
+      operationId: getCase
+      parameters:
+        - name: id
+          in: path
+          description: Case ID
+          required: true
+          schema:
+            type: integer
+        - name: full_case
+          in: query
+          description: Include full case text
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Case details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Case"
+        "404":
+          description: Case not found
+  /jurisdictions/:
+    get:
+      tags:
+        - jurisdictions
+      summary: List jurisdictions
+      description: Retrieve list of all available jurisdictions
+      operationId: listJurisdictions
+      parameters:
+        - name: page_size
+          in: query
+          description: Number of results per page
+          schema:
+            type: integer
+            default: 100
+      responses:
+        "200":
+          description: List of jurisdictions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                    nullable: true
+                  previous:
+                    type: string
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Jurisdiction"
+  /jurisdictions/{id}/:
+    get:
+      tags:
+        - jurisdictions
+      summary: Get jurisdiction by ID
+      description: Retrieve specific jurisdiction details
+      operationId: getJurisdiction
+      parameters:
+        - name: id
+          in: path
+          description: Jurisdiction ID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Jurisdiction details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Jurisdiction"
+  /courts/:
+    get:
+      tags:
+        - jurisdictions
+      summary: List courts
+      description: Retrieve list of all available courts
+      operationId: listCourts
+      parameters:
+        - name: jurisdiction
+          in: query
+          description: Filter by jurisdiction ID
+          schema:
+            type: string
+        - name: page_size
+          in: query
+          description: Number of results per page
+          schema:
+            type: integer
+            default: 100
+      responses:
+        "200":
+          description: List of courts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Court"
+components:
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Use format: Token <your-api-key>"
+  schemas:
+    Case:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique case identifier
+        url:
+          type: string
+          description: API URL for this case
+        frontend_url:
+          type: string
+          description: Frontend URL for viewing this case
+        name:
+          type: string
+          description: Full case name
+        name_abbreviation:
+          type: string
+          description: Abbreviated case name
+        decision_date:
+          type: string
+          format: date
+          description: Date of decision
+        docket_number:
+          type: string
+          nullable: true
+          description: Docket number
+        first_page:
+          type: string
+          nullable: true
+          description: First page number
+        last_page:
+          type: string
+          nullable: true
+          description: Last page number
+        citations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Citation"
+        volume:
+          $ref: "#/components/schemas/Volume"
+        reporter:
+          $ref: "#/components/schemas/Reporter"
+        court:
+          $ref: "#/components/schemas/Court"
+        jurisdiction:
+          $ref: "#/components/schemas/Jurisdiction"
+        casebody:
+          $ref: "#/components/schemas/CaseBody"
+          nullable: true
+    Citation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [official, parallel, vendor]
+        cite:
+          type: string
+        category:
+          type: string
+          nullable: true
+    Volume:
+      type: object
+      properties:
+        url:
+          type: string
+        volume_number:
+          type: string
+        barcode:
+          type: string
+          nullable: true
+    Reporter:
+      type: object
+      properties:
+        url:
+          type: string
+        full_name:
+          type: string
+        short_name:
+          type: string
+        start_year:
+          type: integer
+          nullable: true
+        end_year:
+          type: integer
+          nullable: true
+    Court:
+      type: object
+      properties:
+        url:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        name_abbreviation:
+          type: string
+        jurisdiction:
+          $ref: "#/components/schemas/Jurisdiction"
+    Jurisdiction:
+      type: object
+      properties:
+        url:
+          type: string
+        id:
+          type: string
+        name:
+          type: string
+        name_long:
+          type: string
+        whitelisted:
+          type: boolean
+        slug:
+          type: string
+    CaseBody:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/CaseBodyData"
+        status:
+          type: string
+    CaseBodyData:
+      type: object
+      properties:
+        head_matter:
+          type: string
+          nullable: true
+        opinions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Opinion"
+        judges:
+          type: array
+          items:
+            type: string
+        parties:
+          type: array
+          items:
+            type: string
+        attorneys:
+          type: array
+          items:
+            type: string
+    Opinion:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [majority, dissent, concurring, plurality, per-curiam]
+        author:
+          type: string
+          nullable: true
+        text:
+          type: string
+security:
+  - TokenAuth: []

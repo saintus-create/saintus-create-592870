@@ -1,0 +1,77 @@
+---
+title: Jurisdictions
+---
+
+# Jurisdictions
+
+The CAP API provides access to jurisdiction and court metadata to help filter and understand case data.
+
+## List Jurisdictions
+
+```http
+GET /jurisdictions/
+```
+
+## Response Format
+
+```json
+{
+  "count": 51,
+  "results": [
+    {
+      "url": "https://api.case.law/v1/jurisdictions/cal/",
+      "id": "cal",
+      "name": "California",
+      "name_long": "California Supreme Court",
+      "whitelisted": true,
+      "slug": "cal"
+    }
+  ]
+}
+```
+
+## Get Specific Jurisdiction
+
+```http
+GET /jurisdictions/{id}/
+```
+
+## List Courts
+
+```http
+GET /courts/
+```
+
+## Filter Courts by Jurisdiction
+
+```http
+GET /courts/?jurisdiction=cal
+```
+
+## Common Jurisdiction IDs
+
+| ID | Name |
+|----|------|
+| `cal` | California |
+| `ny` | New York |
+| `tx` | Texas |
+| `fl` | Florida |
+| `us` | United States (Federal) |
+| `scotus` | Supreme Court of the United States |
+
+## Using Jurisdiction Filters
+
+When searching for cases, you can filter by jurisdiction:
+
+```bash
+curl -X GET "https://api.case.law/v1/cases/?search=contract&jurisdiction=cal" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Court Metadata
+
+Each court includes information about:
+- Court name and abbreviation
+- Associated jurisdiction
+- Whitelisted status (full text availability)
+- Geographic coverage

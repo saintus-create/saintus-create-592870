@@ -1,0 +1,105 @@
+---
+title: Bills & Legislation
+---
+
+# Bills & Legislation
+
+The Congress.gov API provides comprehensive access to federal legislation data.
+
+## List Bills
+
+```http
+GET /bill?api_key=YOUR_API_KEY
+```
+
+## Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `congress` | integer | Congress number (e.g., 117 for 117th Congress) |
+| `billType` | string | Bill type (hr, s, hres, sres, hjres, sjres, hconres, sconres) |
+| `limit` | integer | Number of results (max 250) |
+| `offset` | integer | Starting record number |
+| `format` | string | Response format (json, xml) |
+
+## Bill Types
+
+| Type | Description |
+|------|-------------|
+| `hr` | House Bill |
+| `s` | Senate Bill |
+| `hres` | House Resolution |
+| `sres` | Senate Resolution |
+| `hjres` | House Joint Resolution |
+| `sjres` | Senate Joint Resolution |
+| `hconres` | House Concurrent Resolution |
+| `sconres` | Senate Concurrent Resolution |
+
+## Example Requests
+
+### List Recent Bills
+
+```bash
+curl -X GET "https://api.congress.gov/v3/bill?api_key=YOUR_API_KEY&limit=20"
+```
+
+### Get Bills from Specific Congress
+
+```bash
+curl -X GET "https://api.congress.gov/v3/bill?api_key=YOUR_API_KEY&congress=117&billType=hr"
+```
+
+## Get Bill Details
+
+```http
+GET /bill/{congress}/{billType}/{billNumber}?api_key=YOUR_API_KEY
+```
+
+### Example
+
+```bash
+curl -X GET "https://api.congress.gov/v3/bill/117/hr/3580?api_key=YOUR_API_KEY"
+```
+
+## Get Bill Text
+
+```http
+GET /bill/{congress}/{billType}/{billNumber}/text?api_key=YOUR_API_KEY
+```
+
+## Response Format
+
+```json
+{
+  "bill": {
+    "congress": 117,
+    "billType": "hr",
+    "billNumber": 3580,
+    "title": "Infrastructure Investment and Jobs Act",
+    "originChamber": "House",
+    "introducedDate": "2021-06-24",
+    "sponsor": {
+      "bioguideId": "P000617",
+      "fullName": "Nancy Pelosi",
+      "party": "D",
+      "state": "CA"
+    },
+    "cosponsors": {
+      "cosponsor": [...]
+    },
+    "actions": {
+      "action": [...]
+    },
+    "committees": {
+      "committee": [...]
+    }
+  }
+}
+```
+
+## Tips
+
+- Use the Congress number to filter by session
+- Bill types are standardized abbreviations
+- Bill text may be available in multiple formats
+- Check the `latestAction` field for current status

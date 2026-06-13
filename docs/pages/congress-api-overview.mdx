@@ -1,0 +1,55 @@
+---
+title: Congress API Overview
+---
+
+# Congress.gov API Overview
+
+The Congress.gov API provides programmatic access to legislative data from the U.S. Congress, including bills, amendments, members, committees, and more. This official API from the Library of Congress makes federal legislative information available in machine-readable formats.
+
+## Key Features
+
+- **Bill Tracking**: Search and retrieve bill information, text, and status
+- **Amendment Data**: Access bill amendments and their details
+- **Member Information**: Get data on current and former Members of Congress
+- **Committee Data**: Access committee assignments and hearings
+- **Congressional Records**: Access the Congressional Record and related documents
+- **Summaries**: Retrieve bill summaries written by Congressional Research Service
+
+## Authentication
+
+API key required via `api_key` parameter. Sign up at [api.congress.gov/sign-up](https://api.congress.gov/sign-up/).
+
+```bash
+?api_key=YOUR_API_KEY
+```
+
+## Rate Limits
+
+- 5,000 requests per hour per API key
+
+## Data Coverage
+
+- Bills from 1973 (93rd Congress) to present
+- Some historical bills from 1799-1873 (6th-42nd Congresses)
+- Current and former Members of Congress
+- Committee data and hearings
+- Roll call votes
+
+## Getting Started
+
+1. [Sign up for an API key](https://api.congress.gov/sign-up/)
+2. Explore the [API Reference](#) for available endpoints
+3. Start with [Bills & Legislation](#) to track legislation
+
+## API Endpoints
+
+- `GET /bill` - List bills
+- `GET /bill/{congress}/{billType}/{billNumber}` - Get bill details
+- `GET /bill/{congress}/{billType}/{billNumber}/text` - Get bill text
+- `GET /amendment` - List amendments
+- `GET /member` - List members
+- `GET /member/{memberId}` - Get member details
+
+## Support
+
+For API support, visit the [Congress.gov API GitHub](https://github.com/LibraryOfCongress/api.congress.gov/).

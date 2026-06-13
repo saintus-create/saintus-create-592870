@@ -1,0 +1,107 @@
+---
+title: PACER & RECAP
+---
+
+# PACER & RECAP API
+
+Access federal court docket information through the RECAP system, which provides free access to PACER data.
+
+## What is RECAP?
+
+RECAP (Reverse PACER) is a free archive of federal court documents that provides an alternative to the paid PACER system. It's maintained by the Free Law Project and integrated into CourtListener.
+
+## List RECAP Documents
+
+```http
+GET /recap/
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `page` | integer | Page number (default: 1) |
+
+### Example Request
+
+```bash
+curl -X GET "https://www.courtlistener.com/api/rest/v4/recap/?page=1" \
+  -H "Authorization: Token YOUR_API_KEY"
+```
+
+## Response Format
+
+```json
+{
+  "count": 1234,
+  "results": [
+    {
+      "id": 123456,
+      "docket_entry_id": 789012,
+      "document_number": 15,
+      "pacer_doc_id": "1234567890",
+      "is_available": true,
+      "file_size": 1024000,
+      "date_upload": "2023-01-15T10:30:00Z"
+    }
+  ]
+}
+```
+
+## RECAP Document Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | integer | Unique document identifier |
+| `docket_entry_id` | integer | Associated docket entry |
+| `document_number` | integer | Document number in docket |
+| `pacer_doc_id` | string | Original PACER document ID |
+| `is_available` | boolean | Whether document is available |
+| `file_size` | integer | File size in bytes |
+| `date_upload` | datetime | When document was uploaded |
+
+## Benefits of RECAP
+
+### Cost Savings
+- Free access to federal court documents
+- No PACER fees for archived documents
+- Community-sourced archive
+
+### Comprehensive Coverage
+- Millions of federal court documents
+- Multiple court jurisdictions
+- Historical and current documents
+
+### Integration
+- Seamless integration with CourtListener
+- Cross-referenced with case law
+- Full-text search capability
+
+## Limitations
+
+### Coverage
+- Not all PACER documents are archived
+- Coverage depends on community contributions
+- Some documents may be unavailable
+
+### Timeliness
+- Documents are added as they become available
+- May not have the most recent filings
+- Depends on user submissions
+
+## Getting Started
+
+1. **Search RECAP**: Use the `/recap/` endpoint to explore available documents
+2. **Filter by Docket**: Use docket information to find specific cases
+3. **Download Documents**: Access full document content when available
+4. **Contribute**: Help grow the archive by uploading PACER documents
+
+## Use Cases
+
+- **Legal Research**: Access federal court documents without PACER fees
+- **Litigation Support**: Review court filings and docket entries
+- **Academic Research**: Study federal court proceedings
+- **Due Diligence**: Comprehensive background checks
+
+## Support
+For RECAP-specific questions, visit [Free Law Project](https://www.free.law/).

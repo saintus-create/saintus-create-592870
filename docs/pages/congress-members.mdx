@@ -1,0 +1,109 @@
+---
+title: Members & Committees
+---
+
+# Members & Committees
+
+Access information about Members of Congress and their committee assignments.
+
+## List Members
+
+```http
+GET /member?api_key=YOUR_API_KEY
+```
+
+## Query Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `congress` | integer | Congress number |
+| `limit` | integer | Number of results (max 250) |
+| `offset` | integer | Starting record number |
+| `format` | string | Response format (json, xml) |
+
+## Example Requests
+
+### List Current Members
+
+```bash
+curl -X GET "https://api.congress.gov/v3/member?api_key=YOUR_API_KEY&limit=100"
+```
+
+### Get Members from Specific Congress
+
+```bash
+curl -X GET "https://api.congress.gov/v3/member?api_key=YOUR_API_KEY&congress=117"
+```
+
+## Get Member Details
+
+```http
+GET /member/{memberId}?api_key=YOUR_API_KEY
+```
+
+### Example
+
+```bash
+curl -X GET "https://api.congress.gov/v3/member/P000617?api_key=YOUR_API_KEY"
+```
+
+## Response Format
+
+```json
+{
+  "member": {
+    "bioguideId": "P000617",
+    "firstName": "Nancy",
+    "lastName": "Pelosi",
+    "party": "D",
+    "state": "CA",
+    "district": 12,
+    "birthDate": "1940-03-26",
+    "terms": {
+      "item": [
+        {
+          "chamber": "House",
+          "congress": 117,
+          "startYear": 2021,
+          "endYear": 2023
+        }
+      ]
+    }
+  }
+}
+```
+
+## Committee Information
+
+Committee data is included in bill details and member information:
+
+```json
+{
+  "committees": {
+    "committee": [
+      {
+        "systemCode": "hshm00",
+        "name": "Homeland Security Committee",
+        "chamber": "House",
+        "type": "Standing",
+        "subcommittees": {
+          "committee": [...]
+        }
+      }
+    ]
+  }
+}
+```
+
+## Member Identifiers
+
+- **bioguideId**: Congressional Biographical Directory ID
+- **state**: Two-letter state abbreviation
+- **district**: House district number (null for Senators)
+
+## Tips
+
+- Use bioguideId as the primary identifier for members
+- Member data includes historical terms of service
+- Committee assignments are included in member details
+- Check the `terms` array for service history

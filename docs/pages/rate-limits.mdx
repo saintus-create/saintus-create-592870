@@ -1,0 +1,90 @@
+---
+title: Rate Limits
+---
+
+# Rate Limits
+
+Each API has its own rate limiting policies. Understanding these limits is important for building reliable applications.
+
+## CourtListener API
+
+### Default Limits
+- **5 requests/minute**
+- **50 requests/hour**
+- **125 requests/day**
+
+### Expanded Access
+Free Law Project memberships and commercial agreements are available for expanded access.
+
+## Caselaw Access Project API
+
+### Free Tier
+- **500 requests/day**
+
+### Research Projects
+Higher limits available for research projects. Contact Harvard Library Innovation Lab for details.
+
+## Congress.gov API
+
+### Standard Limit
+- **5,000 requests/hour** per API key
+
+### Pagination
+- Default: 20 results per request
+- Maximum: 250 results per request
+- Use `offset` parameter for pagination
+
+## Vaquill AI API
+
+### Free Tier
+- **500 credits/month**
+
+### Credit Costs
+Different endpoints consume different amounts of credits. See the [pricing page](https://vaquill.ai/pricing) for details.
+
+## Best Practices
+
+### Implement Retry Logic
+```javascript
+async function fetchWithRetry(url, options, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetch(url, options);
+      if (response.status === 429) {
+        // Rate limited - wait and retry
+        await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+        continue;
+      }
+      return response;
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+    }
+  }
+}
+```
+
+### Monitor Usage
+- Track your API usage regularly
+- Set up alerts for approaching limits
+- Implement graceful degradation when limits are reached
+
+### Cache Responses
+- Cache frequently accessed data
+- Use appropriate cache expiration times
+- Respect rate limits even when caching
+
+### Optimize Requests
+- Use pagination instead of requesting all data at once
+- Filter results to get only what you need
+- Batch requests when possible
+
+## Error Handling
+
+### HTTP 429 - Too Many Requests
+When you hit rate limits, you'll receive a 429 status code. Implement exponential backoff and retry logic.
+
+### Rate Limit Headers
+Some APIs include rate limit information in response headers:
+- `X-RateLimit-Limit`: Your rate limit
+- `X-RateLimit-Remaining`: Remaining requests
+- `X-RateLimit-Reset`: When the limit resets

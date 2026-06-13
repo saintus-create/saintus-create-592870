@@ -1,0 +1,101 @@
+---
+title: Case Law Search
+---
+
+# Case Law Search
+
+Search millions of US federal and state court opinions using semantic search powered by AI.
+
+## Search Cases
+
+```http
+POST /search/cases
+Authorization: Bearer vq_key_YOUR_API_KEY
+```
+
+## Request Body
+
+```json
+{
+  "query": "contract breach damages",
+  "jurisdiction": "federal",
+  "court": null,
+  "date_range": {
+    "start": "2000-01-01",
+    "end": "2024-12-31"
+  },
+  "limit": 10
+}
+```
+
+## Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `query` | string | Search query for case law (required) |
+| `jurisdiction` | string | Filter by jurisdiction |
+| `court` | string | Filter by specific court |
+| `date_range` | object | Start and end dates for filtering |
+| `limit` | integer | Number of results to return (max 100) |
+
+## Example Request
+
+```bash
+curl -X POST "https://api.vaquill.ai/v1/search/cases" \
+  -H "Authorization: Bearer vq_key_YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "contract breach damages",
+    "jurisdiction": "federal",
+    "date_range": {
+      "start": "2010-01-01",
+      "end": "2024-12-31"
+    },
+    "limit": 10
+  }'
+```
+
+## Response Format
+
+```json
+{
+  "results": [
+    {
+      "case_name": "Smith v. Jones Corp.",
+      "citation": "456 F.3d 789 (9th Cir. 2020)",
+      "court": "United States Court of Appeals for the Ninth Circuit",
+      "year": 2020,
+      "jurisdiction": "federal",
+      "decision_date": "2020-03-15",
+      "snippet": "The court held that damages for breach of contract must be reasonably foreseeable...",
+      "relevance_score": 0.95,
+      "url": "https://..."
+    }
+  ],
+  "total": 1234,
+  "credits_used": 3
+}
+```
+
+## Semantic Search
+
+The search uses AI-powered semantic understanding to:
+- Find cases based on meaning, not just keywords
+- Understand legal concepts and terminology
+- Provide relevance scores for results
+- Surface relevant cases even with different terminology
+
+## Date Range Filtering
+
+Use date ranges to find:
+- Recent cases for current law
+- Historical cases for precedent research
+- Time-specific legal developments
+
+## Tips
+
+- Use natural language queries for best results
+- Combine with jurisdiction filters for targeted searches
+- Use date ranges to focus on relevant time periods
+- Check relevance scores to prioritize results
+- Follow URLs to access full case text

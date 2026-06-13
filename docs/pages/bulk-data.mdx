@@ -1,0 +1,156 @@
+---
+title: Bulk Data Files
+---
+
+# Bulk Data Files
+
+Download comprehensive CSV files for case law, people, and financial disclosures for large-scale data analysis and research.
+
+## Available Datasets
+
+### Case Law Data
+- **Opinions**: Complete judicial opinions with metadata
+- **Clusters**: Case-level information and citations
+- **Courts**: Court jurisdiction data
+- **Dockets**: Court docket information
+
+### People Data
+- **Judges**: Biographical information for judges
+- **Attorneys**: Attorney information from case records
+- **Financial Disclosures**: Judge financial disclosure reports
+
+### Specialized Data
+- **RECAP Documents**: Federal court document archive
+- **Audio Files**: Oral argument metadata
+- **Citation Network**: Citation relationships between cases
+
+## File Formats
+
+### CSV Format
+- Standard CSV with UTF-8 encoding
+- Comma-separated values
+- Quoted text fields
+- Header row with column names
+
+### File Structure
+```
+bulk-data/
+├── opinions/
+│   ├── opinions_2023.csv
+│   └── opinions_2022.csv
+├── clusters/
+│   └── clusters.csv
+├── people/
+│   └── people.csv
+└── financial-disclosures/
+    └── disclosures.csv
+```
+
+## Download Options
+
+### Web Interface
+- Download individual files from the website
+- Filter by date range or jurisdiction
+- Preview data before download
+
+### API Access
+- Programmatic access to bulk data
+- Automated download scripts
+- Integration with data pipelines
+
+### Custom Exports
+- Request custom data exports
+- Specify filters and columns
+- Schedule regular exports
+
+## Example Data Structure
+
+### Opinions CSV
+
+```csv
+id,cluster_id,author_id,date_created,plain_text,html
+123456,789012,345678,2023-01-15,"Full opinion text...","<html>...</html>"
+```
+
+### People CSV
+
+```csv
+,id,date_created,date_dob,name_first,name_last
+123456,2023-01-15,1965-03-20,John,Smith
+```
+
+### Financial Disclosures CSV
+
+```csv
+id,person_id,year,report_type,filed_date,download_url
+123456,789012,2022,Annual,2023-05-15,https://...
+```
+
+## Usage Examples
+
+### Python
+
+```python
+import pandas as pd
+
+# Load opinions data
+opinions = pd.read_csv('opinions.csv')
+
+# Filter by date
+recent_opinions = opinions[opinions['date_created'] > '2023-01-01']
+
+# Analyze data
+opinion_count = len(recent_opinions)
+print(f"Total opinions: {opinion_count}")
+```
+
+### Command Line
+
+```bash
+# Download and analyze
+wget https://bulk.courtlistener.com/opinions.csv
+wc -l opinions.csv
+head -n 5 opinions.csv
+```
+
+### Database Import
+
+```sql
+-- Import CSV to PostgreSQL
+COPY opinions FROM 'opinions.csv' DELIMITER ',' CSV HEADER;
+```
+
+## Data Quality
+
+### Validation
+- Data integrity checks
+- Consistency verification
+- Duplicate removal
+- Format standardization
+
+### Updates
+- Regular data refreshes
+- Version control for datasets
+- Change logs available
+- Backward compatibility maintained
+
+## Performance Considerations
+
+### File Sizes
+- Opinions: Multiple GB
+- Clusters: Hundreds of MB
+- People: Tens of MB
+- Financial Disclosures: Tens of MB
+
+### Processing Tips
+- Use streaming for large files
+- Process in chunks
+- Use appropriate memory
+- Consider database import for analysis
+
+## Licensing
+
+Data is available under the same terms as the CourtListener API. See [terms of service](https://www.courtlistener.com/terms/) for details.
+
+## Support
+For bulk data requests, contact [Free Law Project](https://www.courtlistener.com/contact/).
